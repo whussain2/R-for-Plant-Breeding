@@ -1,0 +1,88 @@
+		rm(list=ls(all=TRUE)) # Clears out your prior workspace.
+#Loading packages into R
+		library(qtl)
+		library(ASMap)
+#Loading data from working directory 
+		HW<-read.cross("csv",file="HW_GBS_6120.csv",na.strings=c("-"), genotypes=c("A","B"), alleles=c('A','B'), crosstype="riself", estimate.map=FALSE)
+		summary(HW)
+		jittermap(HW)
+#plot genotypic data using geno.image
+	  tiff("Geno.image.tiff",width =10, height =8, units = 'in', res =300)
+	  par(cex.axis=1, cex.lab=1.5,font.axis=2,font.lab=2,col.axis='darkblue', col.lab="darkred")
+	  par(mgp=c(2.3,0.8,0))
+	  par(mar=c(4,4,4,1))
+	  plot_BC<-geno.image(HW, alternate.chrid=TRUE, main="", xlab ="Markers", ylab="Genotypes")
+	  dev.off()
+#Note: No issues with missing data in our data file as it was imputed, missing data only comes from heterozygous calls (<10%) that were treated as missing. However, the codes to check for missing data is given below
+# check for mising data. 
+	plotMissing(HW)
+#plot missing by markers(ntyped) and individuals(nmissing)
+	par(mfrow=c(1,2), las=1)
+	plot(ntyped(HW), ylab="No. typed markers", main="No. genotypes by individual")
+	plot(ntyped(HW, "mar"), ylab="No. typed individuals",main="No. genotypes by marker")
+# Markers with lot of missing data can be droped using following funnction in R/ASMap
+	HW1<- pullCross(HW, type = "missing", pars =list(miss.thresh=0.4)) # drop markers with >40% missing data
+	summary(HW1)
+#Check for duplicate individuals with high proportion of matching allelic information between them.
+	HW_duplicate <- genClones(HW1, tol = 0.95, id="Genotype") # genotypes that share a proportion of their alleles>95%
+	HW2<- fixClones(HW1, HW_duplicate$cgd, consensus = TRUE) # to obtain a single consensus genotype.
+	summary(HW2)
+	write.cross(HW2, file="HWGBS_dropingduplicates.csv")
+# Histogram of number of matching genotypes be plotted in R/qtl
+	tiff("Comparing_genotypes.tiff", units="in", width =6, height =6, bg="white", res=300) 
+	cg <- comparegeno(HW2)
+	par(mar=c(3,3,1.2,1.2), mgp=c(1.8,0.4,0))
+	hist(cg, breaks=seq(0, 1, len=53), main="",xlab="Matching genotypes", 
+	     ylab="Frequency", col="pink", col.axis="darkblue", cex.axis=1, cex.lab=1.3, col.lab="darkred",font.axis=2, font.lab=2)
+	rug(cg, col="blue")
+	dev.off()
+#Check markers for excessive segregation distortion.
+	gt <- geno.table(HW2)
+	gt[gt$P.value < 0.01,]
+	gt[gt$P.value < 0.01/totmar(HW2),]
+# drop significant distorted markers
+	todrop <- rownames(gt[gt$P.value < 0.01,])
+	write.csv(todrop, file="SD_markers.csv")
+	HW3<-drop.markers(HW2,todrop)
+	summary(HW3)
+	write.cross(HW3, file="HW_distorted_markers.csv")
+#check markers for switched alleles
+	checkAlleles(HW3, threshold=3) # No apparent problem found
+#Estimate and plot recombination fractions of all the markers
+	rf <- pull.rf(HW3)
+	lod <- pull.rf(HW3, what="lod")
+	tiff("Recombination_fractionBefore.tiff", width =12, height =10, units="in", res=300)
+	par(mar=c(4,5,2,2))
+	par(cex.axis=1.3, cex.lab=2.4, font.axis=2, font.lab=2, col="red", col.axis="blue",col.lab="darkred")
+	plot(as.numeric(rf), as.numeric(lod), xlab="Recombination fraction", ylab="LOD score", col="darkblue")
+	dev.off()
+# Heatmap plot for visual diagnosis between recombination fractions and LOD score
+	r<- est.rf(HW3)
+	tiff("HeatMap_beforecorrection.tiff", width =7.5, height =6, units="in", res=300)
+	par(mar=c(4.6, 4.8,2,1.8))
+	par(mgp=c(2.6,0.8,0))
+	par(cex.axis=0.8, cex.lab=2, font.axis=2, font.lab=2, col="red",col.axis="black", col.lab="darkred")
+	plot<-plotRF(r, alternate.chrid=TRUE, main="")
+	dev.off()
+# Marker profile and statistics in R/ASMaplibrary for checking genotyping errors
+# Linkage map statistics across the markers
+    stat_markers<-statMark(HW3, stat.type = c("marker"), map.function = "kosambi")
+    write.csv(stat_markers, file="stat_markers.csv") # Save the marker statistics file
+# visualize marker profile showing segregation distortion (seg.dist), double crossovers(dxo), estimated recombination fraction (erf), and LOD score  (lod) for each marker
+		profileMark(HW, stat.type = c("seg.dist", "dxo", "erf", "lod"), id = "Genotype", layout = c(1, 4), type = "l", cex=2.5, cex.axis=2, cex.lab=2) 
+#Dropping the markers with elevated number of dxo using drop.markers function
+	HW4 <- markernames(HW3,)[statMark(HW3, stat.type ="marker")$marker$dxo>10]
+	HW4<-drop.markers(HW3, HW4)
+	summary(HW4)
+# Linkage map statistics across the genotypes
+	stat_genotype<- statGen(HW4, bychr = FALSE, stat.type = c("dxo"))
+  write.csv(stat_genotype, file="stat_genotype_dxo.csv")
+# visualize genotype profile showing number double crossovers(dxo) and missing proportion (miss) in each genotype
+		profileGen(HW4, bychr = FALSE, stat.type = "dxo", id ="Genotype", lty = 20) 
+# Genotypes with elevated number of dxo were removed using subset() command
+		HW5<- subset(HW4, ind = stat_genotype$dxo<60)
+    summary(HW5)
+# save the Data file for linkage mapping
+    write.cross(HW5, file="HW5.csv")
+##########################################END##########################################
+	
