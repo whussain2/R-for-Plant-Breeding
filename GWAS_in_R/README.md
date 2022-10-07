@@ -1,7 +1,9 @@
 # Learning GWAS
- This folder contains the tutorials for learning the GWAS.  
- 
- #  Source code and Document
+```
+ This folder contains the tutorials for learning the GWAS. The first HTML is on **Understanding the GWAS**. It includes basic concepts of GWAS, statistical models and workflow. All the literature relevant to GWAS is given as hyperlinks in HTML file. 
+ ```
+#  Source code and Document
+
 
 ***
 ## 1. Understanding GWAS (Theory)
