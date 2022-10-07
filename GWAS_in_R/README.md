@@ -15,7 +15,7 @@
 ## 1. Understanding GWAS (Theory)
 ***
 
-- The HTML file is available here [GWAS Theory](https://htmlpreview.github.io/?https://github.com/whussain2/R-for-Plant-Breeding/blob/master/GWAS_in_R/GWAS_in_R_Step_by_Step_Guid.html)
+- The HTML file is available here [GWAS Theory](https://htmlpreview.github.io/?https://github.com/whussain2/R-for-Plant-Breeding/blob/master/GWAS_in_R/GWAS_in_R_Step_by_Step_Guide.html)
 
 - The source in ****.Rmd****  is available here [GWAS Theory (.rmd file)](https://github.com/whussain2/R-for-Plant-Breeding/blob/master/GWAS_in_R/GWAS_in_R_Step_by_Step_Guide.Rmd)
 
