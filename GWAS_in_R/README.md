@@ -2,8 +2,7 @@
 ![](www/Background.png)
 
 - This folder contains the tutorials for learning the GWAS. 
-- The **first HTML file** is on **Understanding the GWAS**. 
- - It includes basic concepts of GWAS, statistical models and workflow. 
+- The **first HTML file** is on **Understanding the GWAS**. It includes basic concepts of GWAS, statistical models and workflow. 
  - All the literature relevant to GWAS is given as hyperlinks in HTML file. 
  - **Second HTML file** shows the demo of GWAS in [rrBLUP](https://cran.r-project.org/web/packages/rrBLUP/index.html) and [GAPIT](https://zzlab.net/GAPIT/) R packages 
  
@@ -29,7 +28,7 @@
 
 - The source code in ****.Rmd****  is available here [GWAS R Workflow](https://github.com/whussain2/R-for-Plant-Breeding/blob/master/GWAS_in_R/Hands_On_GWAS_R.Rmd)
 
-- The HTML file is available here [ASReml R Workflow HMTL](https://htmlpreview.github.io/?https://github.com/whussain2/R-for-Plant-Breeding/blob/master/GWAS_in_R/Hands_On_GWAS_R.html)
+- The HTML file is available here [GWAS R Workflow ](https://htmlpreview.github.io/?https://github.com/whussain2/R-for-Plant-Breeding/blob/master/GWAS_in_R/Hands_On_GWAS_R.html)
 
 
 # How to Use the Source Codes and Run the Pipeline
