@@ -1,5 +1,5 @@
 # Learning GWAS
-![](www/Introduction.png)
+![](www/GWAS_Introduction.png)
 
 - This folder contains the tutorials for learning the GWAS. 
 - The **first HTML file** is on **Understanding the GWAS**. 
